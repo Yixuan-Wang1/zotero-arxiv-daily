@@ -38,7 +38,17 @@ class ArxivPaper:
     
     @property
     def pdf_url(self) -> str:
-        return self._paper.pdf_url
+        if self._paper.pdf_url is not None:
+            return self._paper.pdf_url
+        
+        pdf_url = f"https://arxiv.org/pdf/{self.arxiv_id}.pdf"
+        if self._paper.links is not None:
+            pdf_url = self._paper.links[0].href.replace('abs','pdf')
+
+        ## Assign pdf_url to self._paper.pdf_url for pdf downloading (Issue #119)
+        self._paper.pdf_url = pdf_url
+
+        return pdf_url
     
     @cached_property
     def code_url(self) -> Optional[str]:
